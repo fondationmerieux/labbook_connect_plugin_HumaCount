@@ -1,0 +1,21 @@
+# Analyzer Configuration File
+# Contains general settings and connection details for one HUMAN HumaCount 5D analyzer.
+
+version = "1.0.1"  # Configuration file version
+
+[analyzer]
+brand = "HUMAN"                                     # Analyzer brand
+name = "HumaCount5D"                                # Analyzer model name
+id = "HC5D1"                                  # Identifiant unique de l'équipement (ex: HC5D-LNSP-01)
+plugin = "AnalyzerHumaCount5D"                      # Plugin Java class name for this analyzer
+url_lis = "http://localhost/sigl"                   # URL of the Laboratory Information System (LIS) upstream endpoint
+operation_mode = "query"                            # Operation mode (batch or query)
+archive_msg = "Y"                                   # Enable ('Y') or disable ('N') message archiving
+type_cnx = "socket"                                 # Connection type (socket, ...)
+type_msg = "HL7"                                    # Message type (HL7 or ASTM)
+mapping = "/storage/resource/connect/analyzer/mapping/mapping_humacount5d.toml"  # Mapping configuration to use
+
+[analyzer.socket]
+mode = "server"                                     # Socket mode : server (l'automate se connecte en client)
+ip = "A compléter"                                  # Adresse IP de l'automate HumaCount 5D (ex: 192.168.1.X)
+port = A compléter                                  # Port d'écoute (ex: 12305) — à configurer aussi dans l'automate

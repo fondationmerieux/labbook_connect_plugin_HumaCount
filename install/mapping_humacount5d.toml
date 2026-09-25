@@ -1,0 +1,275 @@
+# ============================================================
+# LabBook Connect — Mapping HumaCount 5D
+# Analyseur : HUMAN HumaCount 5D (hématologie 5-parts diff)
+# Protocole : HL7 v2.3.1 / TCP-IP / MLLP
+# Version   : 4.0.0  (ALIGNE SUR L'ANALYSE EXISTANTE « NFS - Hematologia »)
+# Date      : 2026-09-11
+# ============================================================
+#
+# CHANGEMENT PAR RAPPORT A LA v3.x
+# --------------------------------
+# La v3.x pointait vers une analyse autonome NFS_HC5 et des variables HC_*
+# qui n'ont jamais ete creees dans le referentiel (requete SQL : Empty set).
+# Consequence : les 29 valeurs arrivaient bien dans analyzer_result avec
+# anr_lb_code = "HC_xxx", mais aucun champ de saisie ne porte ce code,
+# donc aucun pre-remplissage a l'ecran.
+#
+# Cette v4.0 mappe directement sur l'analyse deja utilisee au laboratoire :
+#   sigl_05_data : id = 555, code = B1030, libelle « NFS - Hematologia »
+#   33 variables, codes NFS_*
+# Aucune creation SQL n'est necessaire. Aucune modification du jar non plus.
+#
+# vendor_result_code : OBX-3.1 envoye par l'automate (code LOINC ou 99MRC)
+# lis_result_code    : sigl_07_data.code_var de l'analyse B1030
+# lis_unit           : unite a transmettre (remplace OBX-6 si defini)
+#                      absent / commente = OBX-6 conserve tel quel
+#
+# test : OBR-4.1 identifiant le type de resultat
+#   01001 = Automated Count (NFS automate — 29 parametres)  <- releve sur message reel
+#   01002 = Manual Count    (NFS manuelle — non mappe ici)
+#
+# COUVERTURE
+# ----------
+#   28 parametres automate mappes sur 28 des 33 variables de B1030
+#   1 parametre automate NON mappe   : PDW (32207-3) — pas de variable dans B1030
+#   5 variables B1030 NON alimentees : NFS_MI#, NFS_MI%, NFS_GR#, NFS_GR%
+#                                      (diff 3-parts, l'automate est 5-parts)
+#                                      et NFS_HGB_1 (doublon d'hemoglobine)
+# ============================================================
+
+# ------------------------------------------------------------
+# Analyse — alimente OBR-4 du message OUL^R22 envoye au LIS
+# ------------------------------------------------------------
+[[ivd_test]]
+name = "nfs_hematologia"
+vendor_test_code = "01001"
+lis_test_code = "B1030"
+
+# ════════════════════════════════════════════════════════════
+# LEUCOCYTES
+# ════════════════════════════════════════════════════════════
+
+# ── WBC — Leucocytes totaux ─────────────────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "6690-2"
+lis_result_code    = "NFS_WBC"
+# lis_unit         = "10³/µL"
+
+# ── NEU# — Neutrophiles (valeur absolue) ────────────────────────────────────
+# ATTENTION : le code de cette variable dans le referentiel est litteralement
+# "999" (libelle NEUT#). Ce n'est pas une faute de frappe.
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "751-8"
+lis_result_code    = "999"
+# lis_unit         = "10³/µL"
+
+# ── NEU% — Neutrophiles (pourcentage) ───────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "770-8"
+lis_result_code    = "NFS_NE%"
+# lis_unit         = "%"
+
+# ── LYM# — Lymphocytes (valeur absolue) ─────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "731-0"
+lis_result_code    = "NFS_LY#"
+# lis_unit         = "10³/µL"
+
+# ── LYM% — Lymphocytes (pourcentage) ────────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "736-9"
+lis_result_code    = "NFS_LY%"
+# lis_unit         = "%"
+
+# ── MON# — Monocytes (valeur absolue) ───────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "742-7"
+lis_result_code    = "NFS_MO#"
+# lis_unit         = "10³/µL"
+
+# ── MON% — Monocytes (pourcentage) ──────────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "5905-5"
+lis_result_code    = "NFS_MO%"
+# lis_unit         = "%"
+
+# ── EOS# — Eosinophiles (valeur absolue) ────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "711-2"
+lis_result_code    = "NFS_EO#"
+# lis_unit         = "10³/µL"
+
+# ── EOS% — Eosinophiles (pourcentage) ───────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "713-8"
+lis_result_code    = "NFS_EO%"
+# lis_unit         = "%"
+
+# ── BAS# — Basophiles (valeur absolue) ──────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "704-7"
+lis_result_code    = "NFS_BA#"
+# lis_unit         = "10³/µL"
+
+# ── BAS% — Basophiles (pourcentage) ─────────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "706-2"
+lis_result_code    = "NFS_BA%"
+# lis_unit         = "%"
+
+# ── ALY# — Lymphocytes atypiques (valeur absolue) — parametre recherche ─────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "26477-0"
+lis_result_code    = "NFS_AL#"
+# lis_unit         = "10³/µL"
+
+# ── ALY% — Lymphocytes atypiques (pourcentage) — parametre recherche ────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "13046-8"
+lis_result_code    = "NFS_AL%"
+# lis_unit         = "%"
+
+# ── LIC# — Large Immature Cells (valeur absolue) — parametre recherche ──────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "11001"
+lis_result_code    = "NFS_LI#"
+# lis_unit         = "10³/µL"
+
+# ── LIC% — Large Immature Cells (pourcentage) — parametre recherche ─────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "11002"
+lis_result_code    = "NFS_LI%"
+# lis_unit         = "%"
+
+# ════════════════════════════════════════════════════════════
+# ERYTHROCYTES
+# ════════════════════════════════════════════════════════════
+
+# ── RBC — Erythrocytes ──────────────────────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "789-8"
+lis_result_code    = "NFS_RBC"
+# lis_unit         = "million/mm3"
+
+# ── HGB — Hemoglobine ───────────────────────────────────────────────────────
+# L'analyse B1030 contient DEUX variables d'hemoglobine : NFS_HGB et NFS_HGB_1.
+# Le resultat part sur NFS_HGB (la premiere du referentiel).
+# Si a l'ecran c'est l'autre champ HGB qui doit etre rempli, remplacer
+# ci-dessous par "NFS_HGB_1" — un seul des deux, jamais les deux.
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "718-7"
+lis_result_code    = "NFS_HGB"
+# lis_unit         = "g/dl"
+
+# ── HCT — Hematocrite ───────────────────────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "4544-3"
+lis_result_code    = "NFS_HCT"
+# lis_unit         = "%"
+
+# ── MCV — Volume Corpusculaire Moyen ────────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "787-2"
+lis_result_code    = "NFS_MCV"
+# lis_unit         = "fl"
+
+# ── MCH — Teneur Corpusculaire Moyenne en Hemoglobine ───────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "785-6"
+lis_result_code    = "NFS_MCH"
+# lis_unit         = "pg"
+
+# ── MCHC — Concentration Corpusculaire Moyenne en Hemoglobine ───────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "786-4"
+lis_result_code    = "NFS_MCC"
+# lis_unit         = "g/dl"
+
+# ── RDW-CV — Distribution des erythrocytes (coefficient de variation) ───────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "788-0"
+lis_result_code    = "NFS_RCV"
+# lis_unit         = "%"
+
+# ── RDW-SD — Distribution des erythrocytes (ecart-type) ─────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "21000-5"
+lis_result_code    = "NFS_RSD"
+# lis_unit         = "fl"
+
+# ════════════════════════════════════════════════════════════
+# PLAQUETTES
+# ════════════════════════════════════════════════════════════
+
+# ── PLT — Plaquettes ────────────────────────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "777-3"
+lis_result_code    = "NFS_PLT"
+# lis_unit         = "10³/µL"
+
+# ── MPV — Volume Plaquettaire Moyen ─────────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "32623-1"
+lis_result_code    = "NFS_MPV"
+# lis_unit         = "fl"
+
+# ── PCT — Plaquettocrite ────────────────────────────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "11003"
+lis_result_code    = "NFS_PCT"
+# lis_unit         = "%"
+
+# ── P-LCC — Plaquettes de grand volume (valeur absolue) ─────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "34167-7"
+lis_result_code    = "NFS_PLC"
+# lis_unit         = "10³/µL"
+
+# ── P-LCR — Plaquettes de grand volume (ratio) ──────────────────────────────
+[[ivd_mapping]]
+test               = "01001"
+vendor_result_code = "48386-7"
+lis_result_code    = "NFS_PLR"
+# lis_unit         = "%"
+
+# ════════════════════════════════════════════════════════════
+# NON MAPPE — a activer seulement si la variable est creee
+# ════════════════════════════════════════════════════════════
+#
+# ── PDW — Distribution des plaquettes ───────────────────────────────────────
+# Aucune variable correspondante dans l'analyse B1030.
+# Pour l'activer : creer une variable (ex. code_var = "NFS_PDW", unite fl),
+# la lier a l'analyse id 555, puis decommenter le bloc ci-dessous.
+#
+# [[ivd_mapping]]
+# test               = "01001"
+# vendor_result_code = "32207-3"
+# lis_result_code    = "NFS_PDW"
+# lis_unit           = "fl"
