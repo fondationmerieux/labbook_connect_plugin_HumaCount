@@ -17,5 +17,5 @@ mapping = "/storage/resource/connect/analyzer/mapping/mapping_humacount5d.toml" 
 
 [analyzer.socket]
 mode = "server"                                     # Socket mode : server (l'automate se connecte en client)
-ip = "192.168.1.6"                                  # Adresse IP de l'automate HumaCount 5D (ex: 192.168.1.X)
-port = 7501                                  # Port d'écoute (ex: 12305) — à configurer aussi dans l'automate
+ip = "A compléter"                                  # Adresse IP de l'automate HumaCount 5D (ex: 192.168.1.X)
+port = A compléter                                  # Port d'écoute (ex: 12305) — à configurer aussi dans l'automate
