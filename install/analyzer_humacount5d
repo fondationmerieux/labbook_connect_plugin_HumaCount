@@ -1,0 +1,23 @@
+# Analyzer Configuration File
+# Contains general settings and connection details for one HUMAN HumaCount 5D analyzer.
+# Replace every XXXX / X.X.X.X value before copying this file to
+# /storage/resource/connect/analyzer/setting/ (see README.md).
+
+version = "1.0.1"  # Configuration file version
+
+[analyzer]
+brand = "HUMAN"                     # Analyzer brand
+name = "HumaCount5D"                # Analyzer model name
+id = "XXXX"                         # Unique analyzer identifier (same value in LabBook)
+plugin = "AnalyzerHumaCount5D"      # Plugin Java class name for this analyzer
+url_lis = "http://localhost/sigl"   # URL of the Laboratory Information System (LIS) upstream endpoint
+operation_mode = "query"            # Informative only, set the Mode in the LabBook analyzer record
+archive_msg = "Y"                   # Enable ('Y') or disable ('N') message archiving
+type_cnx = "socket"                 # Connection type (socket, ...)
+type_msg = "HL7"                    # Message type (HL7 or ASTM)
+mapping = "/storage/resource/connect/analyzer/mapping/mapping_humacount5d.toml"  # Mapping configuration to use
+
+[analyzer.socket]
+mode = "server"                     # Socket mode: server (the analyzer connects as client)
+ip = "X.X.X.X"                      # Analyzer IP address
+port = XXXX                         # Port number for socket communication (7500-7599 or 12300-12399)
